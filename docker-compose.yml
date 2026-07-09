@@ -1,0 +1,30 @@
+services:
+  app:
+    build: .
+    container_name: seedance-ai
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - seedance-data:/app/data        # 持久化数据库
+      - seedance-uploads:/app/uploads   # 持久化上传文件
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+
+  nginx:
+    image: nginx:alpine
+    container_name: seedance-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro    # 放SSL证书
+    depends_on:
+      - app
+
+volumes:
+  seedance-data:
+  seedance-uploads:

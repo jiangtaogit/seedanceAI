@@ -1,0 +1,349 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0a0f1c;
+  --bg-card: #0f1729;
+  --border: #1e293b;
+  --accent: #00d4ff;
+  --success: #00ff88;
+  --warning: #ff6b35;
+  --error: #ff3b5c;
+  --accent-secondary: #a855f7;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Glass Effect Utilities */
+.glass {
+  background: rgba(15, 23, 41, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(30, 41, 59, 0.5);
+}
+
+.glass-strong {
+  background: rgba(15, 23, 41, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(30, 41, 59, 0.6);
+}
+
+/* Navigation glass — more transparent for dynamic background */
+.glass-nav {
+  background: rgba(10, 15, 28, 0.55);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+}
+
+/* Gradient Background */
+.bg-gradient-main {
+  background: linear-gradient(135deg, #0a0f1c 0%, #0f1729 50%, #0a0f1c 100%);
+}
+
+.bg-gradient-hero {
+  background: linear-gradient(
+    135deg,
+    #0a0f1c 0%,
+    #0c1220 25%,
+    #0f1729 50%,
+    #0c1220 75%,
+    #0a0f1c 100%
+  );
+}
+
+/* Glow Effects */
+.glow-accent {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.glow-success {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.glow-error {
+  box-shadow: 0 0 20px rgba(255, 59, 92, 0.3);
+}
+
+/* Animation Keyframes */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Selection */
+::selection {
+  background: rgba(0, 212, 255, 0.3);
+  color: #ffffff;
+}
+
+/* ============ Flow Node Styles ============ */
+
+/* ============ Tech Background Animations ============ */
+
+/* Flowing glow orbs */
+.tech-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.12;
+}
+
+.tech-glow-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #00d4ff 0%, transparent 70%);
+  top: -10%;
+  left: -5%;
+  animation: tech-drift-1 20s ease-in-out infinite;
+}
+
+.tech-glow-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+  bottom: -8%;
+  right: -5%;
+  animation: tech-drift-2 25s ease-in-out infinite;
+}
+
+.tech-glow-3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #00ff88 0%, transparent 70%);
+  top: 40%;
+  left: 50%;
+  animation: tech-drift-3 22s ease-in-out infinite;
+}
+
+.tech-glow-4 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #00d4ff 0%, transparent 70%);
+  bottom: 20%;
+  left: 20%;
+  animation: tech-drift-4 28s ease-in-out infinite;
+}
+
+@keyframes tech-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(15vw, 8vh) scale(1.1); }
+  50% { transform: translate(25vw, 20vh) scale(0.9); }
+  75% { transform: translate(10vw, 15vh) scale(1.05); }
+}
+
+@keyframes tech-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-12vw, -6vh) scale(1.15); }
+  50% { transform: translate(-20vw, -15vh) scale(0.85); }
+  75% { transform: translate(-8vw, -10vh) scale(1.05); }
+}
+
+@keyframes tech-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-15vw, 10vh) scale(1.1); }
+  66% { transform: translate(10vw, -8vh) scale(0.9); }
+}
+
+@keyframes tech-drift-4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(12vw, -12vh) scale(1.05); }
+  66% { transform: translate(-8vw, 8vh) scale(1.1); }
+}
+
+/* Subtle grid overlay */
+.tech-grid-overlay {
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Float animation for hero blobs */
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -20px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Flow connector arrow */
+.flow-connector-arrow::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--accent);
+}
+
+.flow-connector-completed::after {
+  border-top-color: var(--success);
+}
+
+.flow-connector-inactive::after {
+  border-top-color: var(--border);
+}
+
+/* Generate button pulse glow */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+  50% { box-shadow: 0 0 35px rgba(0, 212, 255, 0.5); }
+}
+
+.btn-generate-active {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Node enter animation */
+@keyframes node-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.flow-node-enter {
+  animation: node-enter 0.4s ease-out;
+}
+
+/* Endpoint status dots */
+.endpoint-dot-configured {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  display: inline-block;
+}
+
+.endpoint-dot-unconfigured {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warning);
+  display: inline-block;
+}
+
+/* ============ ReactFlow Theme Override ============ */
+.react-flow__background,
+.react-flow__panpane,
+.react-flow__container {
+  background: transparent !important;
+}
+
+.react-flow__node {
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.react-flow__handle {
+  width: 10px !important;
+  height: 10px !important;
+  border: 2px solid var(--accent) !important;
+  background: var(--bg-primary) !important;
+  border-radius: 50% !important;
+}
+
+.react-flow__handle:hover {
+  background: var(--accent) !important;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+}
+
+.react-flow__edge-path {
+  stroke: var(--accent) !important;
+  stroke-width: 2 !important;
+}
+
+.react-flow__minimap {
+  background: rgba(15, 23, 41, 0.9) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+}
+
+.react-flow__controls {
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.react-flow__controls button {
+  background: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text-secondary) !important;
+}
+
+.react-flow__controls button:hover {
+  background: rgba(0, 212, 255, 0.1) !important;
+}
+
+.react-flow__connection-line {
+  stroke: var(--accent) !important;
+  stroke-width: 2 !important;
+  stroke-dasharray: 5 5 !important;
+}
