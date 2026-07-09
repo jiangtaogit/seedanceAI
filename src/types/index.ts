@@ -1,5 +1,18 @@
 export type TaskStatus = 'queued' | 'processing' | 'completed' | 'failed';
 
+// ============ 用户认证 ============
+
+export interface User {
+  id: string;
+  username: string;
+  role: 'admin' | 'user';
+}
+
+export interface AuthResponse {
+  token: string;
+  user: User;
+}
+
 // ============ 模型定义 ============
 
 export interface ModelOption {
@@ -221,6 +234,8 @@ export interface Task {
   errorMsg?: string;
   model?: string;
   mode?: string;
+  userId?: string;
+  username?: string;
 }
 
 export interface CreateTaskParams {

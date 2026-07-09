@@ -7,6 +7,7 @@
 import { Router, type Request, type Response } from 'express';
 import { getOne, runQuery } from '../database.js';
 import { testConnection } from '../services/seedance.js';
+import { authMiddleware, requireAdmin } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -70,8 +71,9 @@ function parseModelEndpoints(json: string | null | undefined): Record<string, st
 
 /**
  * GET /api/config
+ * All authenticated users can view (masked) config
  */
-router.get('/', async (req: Request, res: Response): Promise<void> => {
+router.get('/', authMiddleware, async (req: Request, res: Response): Promise<void> => {
   try {
     const config = getOne<ApiConfig>("SELECT * FROM api_config WHERE id = 'default'");
     if (!config) { res.status(404).json({ success: false, error: 'Configuration not found' }); return; }
@@ -95,8 +97,9 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 
 /**
  * POST /api/config
+ * Only admin can modify config
  */
-router.post('/', async (req: Request, res: Response): Promise<void> => {
+router.post('/', requireAdmin, async (req: Request, res: Response): Promise<void> => {
   try {
     const { api_key, access_key_id, secret_access_key, endpoint, modelEndpoints } = req.body;
     const now = new Date().toISOString().replace('T', ' ').split('.')[0];
@@ -166,8 +169,9 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
 
 /**
  * POST /api/config/test
+ * Only admin can test connection
  */
-router.post('/test', async (req: Request, res: Response): Promise<void> => {
+router.post('/test', requireAdmin, async (req: Request, res: Response): Promise<void> => {
   try {
     const result = await testConnection();
     res.json({ success: result.success, data: { connected: result.success }, error: result.error });

@@ -16,6 +16,8 @@ export default function Tasks() {
     updateTaskInList, removeTask,
   } = useStore();
 
+  const isAdmin = useStore((s) => s.user?.role === 'admin');
+
   const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
@@ -145,6 +147,7 @@ export default function Tasks() {
             <tr className="border-b border-border-custom bg-bg-card/50">
               <th className="text-left p-3 font-medium text-text-secondary">ID</th>
               <th className="text-left p-3 font-medium text-text-secondary">提示词</th>
+              {isAdmin && <th className="text-left p-3 font-medium text-text-secondary">创建者</th>}
               <th className="text-left p-3 font-medium text-text-secondary">状态</th>
               <th className="text-left p-3 font-medium text-text-secondary">进度</th>
               <th className="text-left p-3 font-medium text-text-secondary">创建时间</th>
@@ -156,6 +159,7 @@ export default function Tasks() {
               <motion.tr key={t.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-b border-border-custom/50 hover:bg-bg-card/30 transition-colors">
                 <td className="p-3 font-mono text-xs text-text-primary">{t.id.slice(0, 8)}...</td>
                 <td className="p-3 text-text-primary max-w-[200px] truncate">{t.prompt}</td>
+                {isAdmin && <td className="p-3 text-text-secondary text-xs">{t.username || '-'}</td>}
                 <td className="p-3"><StatusBadge status={t.status} /></td>
                 <td className="p-3 w-32">
                   <div className="flex items-center gap-2">

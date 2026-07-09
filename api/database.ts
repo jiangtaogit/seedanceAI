@@ -6,6 +6,8 @@ import initSqlJs, { type Database } from 'sql.js';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -76,6 +78,7 @@ export async function initDatabase(): Promise<Database> {
     'ALTER TABLE tasks ADD COLUMN last_frame_file TEXT',
     "ALTER TABLE tasks ADD COLUMN reference_files_json TEXT DEFAULT '{}'",
     "ALTER TABLE api_config ADD COLUMN model_endpoints_json TEXT DEFAULT '{}'",
+    'ALTER TABLE tasks ADD COLUMN user_id TEXT',
   ];
   for (const sql of migrations) {
     try { db.run(sql); } catch { /* column already exists */ }
@@ -100,6 +103,32 @@ export async function initDatabase(): Promise<Database> {
       INSERT INTO api_config (id, endpoint, updated_at)
       VALUES ('default', 'https://visual.volcengineapi.com', datetime('now', 'localtime'))
     `);
+  }
+
+  // Create users table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      username TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'user',
+      created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
+    );
+  `);
+
+  // Initialize default admin user (admin / admin123)
+  const adminRows = db.exec("SELECT COUNT(*) as cnt FROM users WHERE username = 'admin'");
+  const adminCount = adminRows[0]?.values[0]?.[0] as number || 0;
+  if (adminCount === 0) {
+    const adminHash = bcrypt.hashSync('admin123', 10);
+    const adminId = uuidv4();
+    db.run(
+      `INSERT INTO users (id, username, password_hash, role, created_at, updated_at)
+       VALUES (?, 'admin', ?, 'admin', datetime('now', 'localtime'), datetime('now', 'localtime'))`,
+      [adminId, adminHash]
+    );
+    console.log('Default admin user created: admin / admin123');
   }
 
   persistDatabase();

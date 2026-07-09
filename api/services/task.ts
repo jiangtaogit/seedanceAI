@@ -34,6 +34,7 @@ export interface Task {
   mode: string | null;
   last_frame_file: string | null;
   reference_files_json: string;
+  user_id: string | null;
   created_at: string;
   updated_at: string;
   completed_at: string | null;
@@ -68,7 +69,7 @@ export interface TaskListResult {
 /**
  * Create a new task and submit to Seedance API
  */
-export async function createTask(params: CreateTaskParams): Promise<Task> {
+export async function createTask(params: CreateTaskParams, userId?: string): Promise<Task> {
   const taskId = uuidv4();
   const now = new Date().toISOString().replace('T', ' ').split('.')[0];
 
@@ -95,8 +96,8 @@ export async function createTask(params: CreateTaskParams): Promise<Task> {
 
   // Insert initial task record
   runQuery(
-    `INSERT INTO tasks (id, prompt, status, progress, stage, duration, resolution, aspect_ratio, style, seed, cfg_scale, reference_files, model, mode, last_frame_file, reference_files_json, created_at, updated_at)
-     VALUES (?, ?, 'pending', 0, 'submitting', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO tasks (id, prompt, status, progress, stage, duration, resolution, aspect_ratio, style, seed, cfg_scale, reference_files, model, mode, last_frame_file, reference_files_json, user_id, created_at, updated_at)
+     VALUES (?, ?, 'pending', 0, 'submitting', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       taskId,
       params.prompt,
@@ -111,6 +112,7 @@ export async function createTask(params: CreateTaskParams): Promise<Task> {
       mode,
       params.lastFrameFile || null,
       referenceFilesJson,
+      userId || null,
       now,
       now,
     ]
@@ -166,20 +168,31 @@ export function getTask(taskId: string): Task | null {
 
 /**
  * List tasks with pagination and optional status filter
+ * Admin sees all tasks; regular users see only their own
  */
 export function listTasks(
   page: number = 1,
   limit: number = 20,
-  status?: string
+  status?: string,
+  userId?: string,
+  isAdmin?: boolean
 ): TaskListResult {
   const offset = (page - 1) * limit;
-  let whereClause = '';
+  const conditions: string[] = [];
   const params: unknown[] = [];
 
   if (status) {
-    whereClause = 'WHERE status = ?';
+    conditions.push('status = ?');
     params.push(status);
   }
+
+  // Regular users can only see their own tasks
+  if (userId && !isAdmin) {
+    conditions.push('user_id = ?');
+    params.push(userId);
+  }
+
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
   const countResult = getOne<{ cnt: number }>(
     `SELECT COUNT(*) as cnt FROM tasks ${whereClause}`,
@@ -197,10 +210,16 @@ export function listTasks(
 
 /**
  * Delete a task
+ * Admin can delete any task; regular users can only delete their own
  */
-export function deleteTask(taskId: string): boolean {
+export function deleteTask(taskId: string, userId?: string, isAdmin?: boolean): boolean {
   const task = getTask(taskId);
   if (!task) return false;
+
+  // Permission check: non-admin can only delete their own tasks
+  if (userId && !isAdmin && task.user_id && task.user_id !== userId) {
+    return false;
+  }
 
   runQuery('DELETE FROM tasks WHERE id = ?', [taskId]);
   return true;
@@ -208,8 +227,21 @@ export function deleteTask(taskId: string): boolean {
 
 /**
  * Delete all failed tasks
+ * Admin deletes all; regular users delete only their own
  */
-export function deleteFailedTasks(): number {
+export function deleteFailedTasks(userId?: string, isAdmin?: boolean): number {
+  if (userId && !isAdmin) {
+    const result = getOne<{ count: number }>(
+      "SELECT COUNT(*) as count FROM tasks WHERE status = 'failed' AND user_id = ?",
+      [userId]
+    );
+    const count = result?.count || 0;
+    if (count > 0) {
+      runQuery("DELETE FROM tasks WHERE status = 'failed' AND user_id = ?", [userId]);
+    }
+    return count;
+  }
+
   const result = getOne<{ count: number }>(
     "SELECT COUNT(*) as count FROM tasks WHERE status = 'failed'"
   );

@@ -1,7 +1,14 @@
 import { create } from 'zustand';
-import type { Task, ApiConfig, UploadFile, TaskStatus } from '@/types';
+import type { Task, ApiConfig, UploadFile, TaskStatus, User } from '@/types';
 
 interface AppState {
+  // Auth
+  user: User | null;
+  token: string | null;
+  setUser: (user: User | null) => void;
+  setToken: (token: string | null) => void;
+  clearAuth: () => void;
+
   // Tasks
   tasks: Task[];
   currentTask: Task | null;
@@ -97,7 +104,30 @@ const defaultConfig: ApiConfig = {
   modelEndpoints: {},
 };
 
+// Read persisted auth from localStorage
+const _savedToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+const _savedUser = typeof window !== 'undefined' ? (() => { try { const u = localStorage.getItem('user'); return u ? JSON.parse(u) : null; } catch { return null; } })() : null;
+
 export const useStore = create<AppState>((set) => ({
+  // Auth
+  user: _savedUser as User | null,
+  token: _savedToken,
+  setUser: (user) => {
+    if (user) localStorage.setItem('user', JSON.stringify(user));
+    else localStorage.removeItem('user');
+    set({ user });
+  },
+  setToken: (token) => {
+    if (token) localStorage.setItem('token', token);
+    else localStorage.removeItem('token');
+    set({ token });
+  },
+  clearAuth: () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    set({ user: null, token: null });
+  },
+
   // Tasks
   tasks: [],
   currentTask: null,

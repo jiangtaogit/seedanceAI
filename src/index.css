@@ -141,77 +141,121 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ============ Tech Background Animations ============ */
 
-/* Flowing glow orbs */
+/* Flowing glow orbs — bigger, more vivid, multi-color */
 .tech-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.12;
+  filter: blur(100px);
+  opacity: 0.15;
 }
 
 .tech-glow-1 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, #00d4ff 0%, transparent 70%);
-  top: -10%;
-  left: -5%;
-  animation: tech-drift-1 20s ease-in-out infinite;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, #00d4ff 0%, #06b6d4 30%, transparent 70%);
+  top: -15%;
+  left: -10%;
+  animation: tech-drift-1 18s ease-in-out infinite;
 }
 
 .tech-glow-2 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, #a855f7 0%, transparent 70%);
-  bottom: -8%;
-  right: -5%;
-  animation: tech-drift-2 25s ease-in-out infinite;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #a855f7 0%, #8b5cf6 30%, transparent 70%);
+  bottom: -12%;
+  right: -8%;
+  animation: tech-drift-2 22s ease-in-out infinite;
 }
 
 .tech-glow-3 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, #00ff88 0%, transparent 70%);
-  top: 40%;
-  left: 50%;
-  animation: tech-drift-3 22s ease-in-out infinite;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #00ff88 0%, #10b981 30%, transparent 70%);
+  top: 35%;
+  left: 45%;
+  animation: tech-drift-3 20s ease-in-out infinite;
 }
 
 .tech-glow-4 {
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, #00d4ff 0%, transparent 70%);
-  bottom: 20%;
-  left: 20%;
-  animation: tech-drift-4 28s ease-in-out infinite;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #06b6d4 0%, #00d4ff 30%, transparent 70%);
+  bottom: 15%;
+  left: 15%;
+  animation: tech-drift-4 26s ease-in-out infinite;
+}
+
+.tech-glow-5 {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, #8b5cf6 0%, #a855f7 30%, transparent 70%);
+  top: -5%;
+  right: -5%;
+  animation: tech-drift-5 24s ease-in-out infinite;
+}
+
+.tech-glow-6 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #ec4899 0%, #f472b6 30%, transparent 70%);
+  bottom: 40%;
+  right: 30%;
+  animation: tech-drift-6 30s ease-in-out infinite;
 }
 
 @keyframes tech-drift-1 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(15vw, 8vh) scale(1.1); }
-  50% { transform: translate(25vw, 20vh) scale(0.9); }
-  75% { transform: translate(10vw, 15vh) scale(1.05); }
+  25% { transform: translate(18vw, 10vh) scale(1.15); }
+  50% { transform: translate(30vw, 25vh) scale(0.9); }
+  75% { transform: translate(12vw, 18vh) scale(1.08); }
 }
 
 @keyframes tech-drift-2 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(-12vw, -6vh) scale(1.15); }
-  50% { transform: translate(-20vw, -15vh) scale(0.85); }
-  75% { transform: translate(-8vw, -10vh) scale(1.05); }
+  25% { transform: translate(-15vw, -8vh) scale(1.2); }
+  50% { transform: translate(-25vw, -18vh) scale(0.85); }
+  75% { transform: translate(-10vw, -12vh) scale(1.1); }
 }
 
 @keyframes tech-drift-3 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(-15vw, 10vh) scale(1.1); }
-  66% { transform: translate(10vw, -8vh) scale(0.9); }
+  33% { transform: translate(-18vw, 12vh) scale(1.15); }
+  66% { transform: translate(12vw, -10vh) scale(0.88); }
 }
 
 @keyframes tech-drift-4 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(12vw, -12vh) scale(1.05); }
-  66% { transform: translate(-8vw, 8vh) scale(1.1); }
+  33% { transform: translate(15vw, -15vh) scale(1.1); }
+  66% { transform: translate(-10vw, 10vh) scale(1.15); }
 }
 
-/* Subtle grid overlay */
+@keyframes tech-drift-5 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-20vw, 15vh) scale(1.12); }
+  50% { transform: translate(-10vw, 25vh) scale(0.92); }
+  75% { transform: translate(5vw, 10vh) scale(1.06); }
+}
+
+@keyframes tech-drift-6 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(18vw, -8vh) scale(1.18); }
+  66% { transform: translate(-12vw, 12vh) scale(0.9); }
+}
+
+/* Hexagonal grid overlay — sci-fi hex pattern */
+.tech-hex-overlay {
+  background-image:
+    linear-gradient(30deg, rgba(0, 212, 255, 0.025) 12%, transparent 12.5%, transparent 87%, rgba(0, 212, 255, 0.025) 87.5%),
+    linear-gradient(150deg, rgba(0, 212, 255, 0.025) 12%, transparent 12.5%, transparent 87%, rgba(0, 212, 255, 0.025) 87.5%),
+    linear-gradient(30deg, rgba(0, 212, 255, 0.025) 12%, transparent 12.5%, transparent 87%, rgba(0, 212, 255, 0.025) 87.5%),
+    linear-gradient(150deg, rgba(0, 212, 255, 0.025) 12%, transparent 12.5%, transparent 87%, rgba(0, 212, 255, 0.025) 87.5%),
+    linear-gradient(60deg, rgba(168, 85, 247, 0.015) 25%, transparent 25.5%, transparent 75%, rgba(168, 85, 247, 0.015) 75.5%),
+    linear-gradient(60deg, rgba(168, 85, 247, 0.015) 25%, transparent 25.5%, transparent 75%, rgba(168, 85, 247, 0.015) 75.5%);
+  background-size: 80px 140px, 80px 140px, 80px 140px, 80px 140px, 80px 140px, 80px 140px;
+  background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+}
+
+/* Legacy grid overlay kept for reference */
 .tech-grid-overlay {
   background-image:
     linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),

@@ -7,8 +7,12 @@ import { Router, type Request, type Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import { saveFile, deleteFile, getFileInfo, getUploadsDir, ensureUploadsDir } from '../services/file.js';
+import { authMiddleware } from '../middleware/auth.js';
 
 const router = Router();
+
+// All upload routes require authentication
+router.use(authMiddleware);
 
 // ============ Multer Configuration ============
 

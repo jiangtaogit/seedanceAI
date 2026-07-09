@@ -1,16 +1,18 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Download, Play, Clock, Monitor, Maximize, Palette, Cpu, Layers, Sliders, Dice5, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, X, Download, Play, Clock, Monitor, Maximize, Palette, Cpu, Layers, Sliders, Dice5, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import Empty from '@/components/Empty';
 import StatusBadge from '@/components/StatusBadge';
 import { getTasks } from '@/services/api';
 import type { Task } from '@/types';
 import { MODELS, GENERATION_MODES } from '@/types';
+import { useStore } from '@/store/useStore';
 
 const PAGE_SIZE = 10;
 
 export default function History() {
+  const isAdmin = useStore((s) => s.user?.role === 'admin');
   const [tasks, setTasks] = useState<Task[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -122,6 +124,7 @@ export default function History() {
                         <InfoRow icon={Monitor} label="分辨率" value={t.resolution} />
                         <InfoRow icon={Maximize} label="宽高比" value={t.aspectRatio} />
                         <InfoRow icon={Palette} label="风格" value={t.style || '默认'} />
+                        {isAdmin && t.username && <InfoRow icon={User} label="创建者" value={t.username} />}
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-3">

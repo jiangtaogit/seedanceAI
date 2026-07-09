@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Task, CreateTaskParams, ApiConfig, PaginatedResult, PaginationParams, TaskStatus } from '@/types';
+import type { Task, CreateTaskParams, ApiConfig, PaginatedResult, PaginationParams, TaskStatus, User, AuthResponse } from '@/types';
 
 const api = axios.create({
   baseURL: '/api',
@@ -7,7 +7,18 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Response interceptor: unwrap { success, data, error }
+// ============ Token Interceptors ============
+
+// Request interceptor: attach JWT token from localStorage
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Response interceptor: unwrap { success, data, error } + handle 401
 api.interceptors.response.use(
   (res) => {
     const body = res.data;
@@ -17,10 +28,59 @@ api.interceptors.response.use(
     return body;
   },
   (err) => {
+    // Handle 401 — token expired or invalid
+    if (err.response?.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      // Only redirect if not already on login page
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
+      return Promise.reject(new Error('登录已过期，请重新登录'));
+    }
     const msg = err.response?.data?.error || err.response?.data?.message || err.message || '请求失败';
     return Promise.reject(new Error(msg));
   }
 );
+
+// ============ Auth APIs ============
+
+export async function login(username: string, password: string): Promise<AuthResponse> {
+  const res: any = await api.post('/auth/login', { username, password });
+  const data = res.data || res;
+  return {
+    token: data.token,
+    user: data.user,
+  };
+}
+
+export async function register(username: string, password: string): Promise<AuthResponse> {
+  const res: any = await api.post('/auth/register', { username, password });
+  const data = res.data || res;
+  return {
+    token: data.token,
+    user: data.user,
+  };
+}
+
+export async function getCurrentUser(): Promise<User> {
+  const res: any = await api.get('/auth/me');
+  const data = res.data || res;
+  return {
+    id: data.id,
+    username: data.username,
+    role: data.role,
+  };
+}
+
+export function logout(): void {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+}
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  await api.patch('/auth/change-password', { currentPassword, newPassword });
+}
 
 // ============ Task APIs ============
 
@@ -207,5 +267,7 @@ function mapTaskFromBackend(data: Record<string, unknown>): Task {
     errorMsg: data.error_message ? String(data.error_message) : (data.errorMsg ? String(data.errorMsg) : undefined),
     model: data.model ? String(data.model) : undefined,
     mode: data.mode ? String(data.mode) : undefined,
+    userId: data.user_id ? String(data.user_id) : (data.userId ? String(data.userId) : undefined),
+    username: data.username ? String(data.username) : undefined,
   };
 }
